@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.tcua.com/xmlschema/JUnitSOA" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.tcua.com/xmlschema/JUnitSOA">
+
+    <element name="soaentry" type="tns:RootEntryType"></element>
+
+    <complexType name="ObjectType">
+    	<choice maxOccurs="unbounded" minOccurs="0">
+    		<element name="entry" type="tns:EntryType"></element>
+    		<element name="array" type="tns:ContainerType"></element>
+    		<element name="map" type="tns:ContainerType"></element>
+    		<element name="attribute" type="tns:AttributeType"></element>
+    		<element name="tccomponent" type="tns:TCComponentType"></element>
+    	</choice>
+    </complexType>
+
+    <complexType name="ContainerType">
+    	<sequence>
+    		<element name="element" type="tns:ElementType"
+    			maxOccurs="unbounded" minOccurs="0">
+    		</element>
+    	</sequence>
+    	<attribute name="size" type="int"></attribute>
+        <attributeGroup ref="tns:NameGroupDefinition"></attributeGroup>
+    </complexType>
+
+    <complexType name="ElementType">
+    	<complexContent>
+    		<extension base="tns:ObjectType">
+    			<attribute name="key" type="string"></attribute>
+                <attributeGroup ref="tns:ValueGroupDefinition"></attributeGroup>
+            </extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="EntryType">
+    	<complexContent>
+    		<extension base="tns:ObjectType">
+		        <attributeGroup ref="tns:NameGroupDefinition"></attributeGroup>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="AttributeType">
+        <attributeGroup ref="tns:NameGroupDefinition"></attributeGroup>
+		<attributeGroup ref="tns:ValueGroupDefinition"></attributeGroup>
+    </complexType>
+
+
+    <complexType name="TCComponentType">
+    	<sequence>
+    		<element name="tcproperty" type="tns:TCPropertyType"></element>
+    	</sequence>
+    	<attribute name="isNull" type="boolean"></attribute>
+        <attributeGroup ref="tns:NameGroupDefinition"></attributeGroup>
+    </complexType>
+
+    <complexType name="RootEntryType">
+    	<complexContent>
+    		<extension base="tns:ObjectType">
+    			<attribute name="version" type="decimal" use="required"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="TCPropertyType">
+    	<complexContent>
+    		<extension base="tns:AttributeType"></extension>
+    	</complexContent>
+    </complexType>
+
+    <attributeGroup name="NameGroupDefinition">
+    	<attribute name="name">
+    		<simpleType>
+    			<restriction base="string">
+    				<minLength value="1"></minLength>
+    				<pattern value="[a-zA-Z_$][a-zA-Z0-9_$]*"></pattern>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    </attributeGroup>
+
+    <attributeGroup name="ValueGroupDefinition">
+        <annotation>
+        	<documentation>Value definition. A value is exact, pattern matching on null.</documentation>
+        </annotation>
+        <attribute name="value" type="string">
+        	<annotation>
+        		<documentation>Exact value. The value is compared as string and must exact match.</documentation>
+        	</annotation></attribute>
+    	<attribute name="regex" type="string">
+    		<annotation>
+    			<documentation>Regular expression value matcher. The whole real value must match this pattern.</documentation>
+    		</annotation></attribute>
+    	<attribute name="isNull" type="boolean">
+    		<annotation>
+    			<documentation>Null value. The value is a null.</documentation>
+    		</annotation></attribute>
+    </attributeGroup>
+
+</schema>

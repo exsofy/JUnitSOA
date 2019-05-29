@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JUnit Teamcenter SOA response tester
+Bundle-SymbolicName: com.tcua.junit.soa
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Exsofy, s.r.o.
+Import-Package: org.junit;version="4.10.0"
+Require-Bundle: com.teamcenter.rac.kernel,
+ org.eclipse.ui.workbench
+Export-Package: com.tcua.junit.soa,
+ com.tcua.junit.soa.handler
