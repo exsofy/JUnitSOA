@@ -24,15 +24,57 @@ import com.tcua.junit.soa.handler.RootHandler;
  */
 public class SOAExporter extends SOAKit {
 
+	// Root directory for export
+	private final File rootDir;
 	/**
-	 * Standard constructor initializes all default handlers
+	 * Standard constructor initializes all default handlers and define user
+	 * temporary directory as root export directory
 	 */
 	public SOAExporter() {
-		super();
+		this(new File(System.getProperty("java.io.tmpdir")));
 	}
 
-	public void dumpResponse(Object resp, File root,
-			String fileName) {
+	/**
+	 * Directory constructor initializes all default handlers and set root
+	 * export directory
+	 * 
+	 * @param rootDir
+	 */
+	public SOAExporter(File rootDir) {
+		if (!rootDir.exists() || !rootDir.canWrite() || !rootDir.isDirectory()) {
+			throw new IllegalArgumentException("rootDir");
+		}
+		this.rootDir = rootDir;
+	}
+
+	// singleton for preconfigured export
+	static SOAExporter lazyExportSingleton = null;
+
+	/**
+	 * Dump response to current user temporary directory
+	 * 
+	 * @param resp
+	 *            response
+	 * @param fileName
+	 *            dump file name
+	 */
+	public static void dumpToTmp(Object resp, String fileName) {
+		if (lazyExportSingleton == null) {
+			lazyExportSingleton = new SOAExporter();
+		}
+		lazyExportSingleton.dumpResponse(resp, fileName);
+	}
+
+	/**
+	 * Dump response to specific file. The directory must exist, Root export
+	 * directory is not used.
+	 * 
+	 * @param resp
+	 *            response
+	 * @param filePath
+	 *            absolute or relative file path
+	 */
+	public void dumpResponse(Object resp, File filePath) {
 	
 	    DocumentBuilderFactory icFactory = DocumentBuilderFactory.newInstance();
 	    icFactory.setNamespaceAware(true);
@@ -46,14 +88,7 @@ public class SOAExporter extends SOAKit {
 			
 			doc.appendChild(rootElement);
 	
-			String path = resp.getClass().getCanonicalName().replace('.', '/')
-					.replace('$', '/');
-	
-			File exportDir = new File(root, path);
-			exportDir.mkdirs();
-	
-			java.io.Writer writer = new java.io.FileWriter(new File(exportDir,
-					fileName));
+			java.io.Writer writer = new java.io.FileWriter(filePath);
 	        OutputFormat format = new OutputFormat(Method.XML, StandardCharsets.UTF_8.toString(), true);
 	        format.setLineWidth(80);
 	        format.setPreserveEmptyAttributes(true);
@@ -66,6 +101,27 @@ public class SOAExporter extends SOAKit {
 		} catch (IOException | ParserConfigurationException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Dump response to package directory structure below defined directory. The
+	 * package directory structure is created on demand, the root directory must
+	 * exist
+	 * 
+	 * @param resp
+	 *            response
+	 * @param fileName
+	 *            export file name
+	 */
+	public void dumpResponse(Object resp, String fileName) {
+
+		String path = resp.getClass().getCanonicalName().replace('.', '/')
+				.replace('$', '/');
+
+		File exportDir = new File(rootDir, path);
+		exportDir.mkdirs();
+
+		dumpResponse(resp, new File(exportDir, fileName));
 	}
 
 }

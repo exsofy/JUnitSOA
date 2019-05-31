@@ -6,14 +6,22 @@ Generic code sniplet for dumping Teamcenter SOA responses to xml file.
 The dump file can be adopted and used in JUnit validation module.
 
 Code include:
-use the com.tcua.junit.soa/shared folder as part source folde in your
-project.
+use the [com.tcua.junit.soa/shared](com.tcua.junit.soa/shared) folder as additional source folder
+in your java project.
+e.g. in svn
+svn:externals 
+-r2 https://github.com/exsofy/JUnitSOA/trunk/com.tcua.junit.soa/shared JUnitSOA
 
-Basic usage:
+Code clone:
+Copy [com.tcua.junit.soa/shared/com](com.tcua.junit.soa/shared/com) into your project.
+
+[Best practices](docs/BestPractices.md)
+
+Principal usage:
 
 ```Java
 // create exporter
-SOAExporter soaExporter = new SOAExporter();
+SOAExporter soaExporter = new SOAExporter( new File("C:\\temp\\") );
 // Create handler wit properties export for ItemRevision
 TCComponentHandler itemRevisionHandler = new TCComponentHandler(
 		soaExporter);
@@ -22,7 +30,7 @@ itemRevisionHandler.setPropertyNames(new String[] {
 soaExporter.setHandler(TCComponentItemRevision.class,
 		itemRevisionHandler);
 // export the response to filesystem
-soaExporter.dumpResponse(resp, new File("C:\\temp\\"),
+soaExporter.dumpResponse(resp,
 		"Product_Stage1.xml");
 
 // create tester
@@ -38,4 +46,4 @@ try {
  e.printStackTrace();
 }
 
-``'
+```
