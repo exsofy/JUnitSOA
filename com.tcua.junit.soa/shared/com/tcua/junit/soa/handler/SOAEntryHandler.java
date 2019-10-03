@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
 import com.tcua.junit.soa.SOAKit;
@@ -29,6 +30,7 @@ public class SOAEntryHandler extends AbstractHandler implements ISOAChildProvide
 
 		for (Field field : obj.getClass().getDeclaredFields()) {
 			// export object fields
+
 			Class<?> type = field.getType();
 
 			try {
@@ -52,8 +54,9 @@ public class SOAEntryHandler extends AbstractHandler implements ISOAChildProvide
 	}
 
 	@Override
-	public boolean valueChecked(ParsingStatus currentObj, Attributes attributes) {
-		if (isValueNull(currentObj.object, attributes))
+	public boolean valueChecked(ParsingStatus currentObj,
+			Attributes attributes, Locator locator) {
+		if (isValueNull(currentObj.object, attributes, locator))
 			return true;
 		return false;
 	}

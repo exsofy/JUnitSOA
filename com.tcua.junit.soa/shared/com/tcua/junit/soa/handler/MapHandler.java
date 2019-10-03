@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
 import com.tcua.junit.soa.SOAKit;
@@ -43,15 +44,16 @@ public class MapHandler extends AbstractHandler implements ISOAChildProvider {
 	}
 
 	@Override
-	public boolean valueChecked(ParsingStatus currentObj, Attributes attributes) {
-		if (isValueNull(currentObj.object, attributes))
+	public boolean valueChecked(ParsingStatus currentObj,
+			Attributes attributes, Locator locator) {
+		if (isValueNull(currentObj.object, attributes, locator))
 			return true;
 
-		assertTrue("Is map",
+		assertTrue("Is map " + getLocation(locator),
 				Map.class.isAssignableFrom(currentObj.object.getClass()));
 		int iSizeIndex = attributes.getIndex("size");
 		if (iSizeIndex >= 0) {
-			assertEquals("Map size",
+			assertEquals("Map size " + getLocation(locator),
 					Integer.parseInt(attributes.getValue(iSizeIndex)),
 					((Map<?, ?>) currentObj.object).size());
 		}

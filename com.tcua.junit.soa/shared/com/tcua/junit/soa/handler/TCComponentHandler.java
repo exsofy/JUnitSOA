@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
 import com.tcua.junit.soa.SOAKit;
@@ -72,11 +73,13 @@ public class TCComponentHandler extends AbstractHandler implements
 	}
 
 	@Override
-	public boolean valueChecked(ParsingStatus currentObj, Attributes attributes) {
-		if (super.isValueNull(currentObj.object, attributes))
+	public boolean valueChecked(ParsingStatus currentObj,
+			Attributes attributes, Locator locator) {
+		if (super.isValueNull(currentObj.object, attributes, locator))
 			return true;
 
-		assertTrue("Is TCComponent", currentObj.object instanceof TCComponent);
+		assertTrue("Is TCComponent " + getLocation(locator),
+				currentObj.object instanceof TCComponent);
 
 		return false;
 	}

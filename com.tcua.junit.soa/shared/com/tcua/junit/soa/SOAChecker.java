@@ -15,6 +15,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -27,6 +28,9 @@ public class SOAChecker extends SOAKit {
 
 	protected class CheckHandler extends DefaultHandler {
 
+		// manages the current file location
+		private Locator locator;
+
 		// parsing stack, every XML tag push/pop a new parsing status object on
 		// the stack
 		final LinkedList<ParsingStatus> fifo = new LinkedList<ParsingStatus>();
@@ -36,7 +40,13 @@ public class SOAChecker extends SOAKit {
 
 		public CheckHandler(Object rootObj) {
 			// starts from root and entry
-			currentObj = new ParsingStatus(rootObj, rootHandler);
+			currentObj = new ParsingStatus(null, rootObj, rootHandler);
+		}
+
+		// this will be called when XML-parser starts reading
+		// XML-data; here we save reference to current position in XML:
+		public void setDocumentLocator(Locator locator) {
+			this.locator = locator;
 		}
 
 		@Override
@@ -64,8 +74,9 @@ public class SOAChecker extends SOAKit {
 					}
 
 					fifo.push(currentObj);
-					currentObj = new ParsingStatus(nextObj, nextHandler);
-					nextHandler.valueChecked(currentObj, attributes);
+					currentObj = new ParsingStatus(currentObj,nextObj, nextHandler);
+
+					nextHandler.valueChecked(currentObj, attributes, locator);
 
 				}
 			}
@@ -85,6 +96,7 @@ public class SOAChecker extends SOAKit {
 	public void checkResponse(Object resp, File file)
 			throws ParserConfigurationException, SAXException, IOException {
 
+		sourceURL = file.toURI().toURL();
 		FileInputStream is = new FileInputStream(file);
 
 		checkResponse(resp, new InputSource(is));
@@ -98,6 +110,8 @@ public class SOAChecker extends SOAKit {
 				.replace('$', File.separatorChar);
 
 		File file = new File(fileRoot, path + File.separatorChar + fileName);
+		sourceURL = file.toURI().toURL();
+		
 		FileInputStream is = new FileInputStream(file);
 
 		checkResponse(resp, new InputSource(is));
@@ -114,6 +128,8 @@ public class SOAChecker extends SOAKit {
 
 	public void checkResponse(Object resp, URL resource)
 			throws ParserConfigurationException, SAXException, IOException {
+		sourceURL = resource;
+
 		InputSource is = new InputSource(resource.openStream());
 
 		checkResponse(resp, is);

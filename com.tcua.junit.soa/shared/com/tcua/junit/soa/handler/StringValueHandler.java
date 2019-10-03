@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
 
@@ -27,18 +28,26 @@ public class StringValueHandler extends ValueHandler implements
 	}
 
 	@Override
-	public boolean valueChecked(ParsingStatus currentObj, Attributes attributes) {
-		if (isValueNull(currentObj.object, attributes))
+	public boolean valueChecked(ParsingStatus currentObj,
+			Attributes attributes, Locator locator) {
+		if (isValueNull(currentObj.object, attributes, locator))
 			return true;
 
 		int iAttr = attributes.getIndex("value");
 		if (iAttr >= 0) {
 			// value
-			assertEquals("Attribute value", attributes.getValue(iAttr),
-					currentObj.object.toString());
+			if (!attributes.getValue(iAttr)
+					.equals(currentObj.object.toString())) {
+				assertEquals(
+"Attribute value " + getLocation(locator),
+						attributes.getValue(iAttr),
+						currentObj.object.toString());
+			}
 		} else if ( ( iAttr = attributes.getIndex("regex") ) >= 0 ) {
 			// regex
-			assertTrue("Attribute matches ", currentObj.object.toString()
+			assertTrue(
+					"Attribute matches" + getLocation(locator),
+					currentObj.object.toString()
 					.matches(attributes.getValue(iAttr)));
 		}
 		// neither null, value nor regex

@@ -1,6 +1,7 @@
 package com.tcua.junit.soa.handler;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
 import com.tcua.junit.soa.SOAKit;
@@ -21,8 +22,9 @@ public class ElementHandler extends AbstractHandler {
 	}
 
 	@Override
-	public boolean valueChecked(ParsingStatus currentObj, Attributes attributes) {
-		if (isValueNull(currentObj.object, attributes))
+	public boolean valueChecked(ParsingStatus currentObj,
+			Attributes attributes, Locator locator) {
+		if (isValueNull(currentObj.object, attributes, locator))
 			return true;
 
 		return false;

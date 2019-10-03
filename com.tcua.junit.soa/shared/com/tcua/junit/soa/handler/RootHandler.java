@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
 import com.tcua.junit.soa.SOAKit;
@@ -44,7 +45,8 @@ public class RootHandler extends SOAEntryHandler {
 	}
 
 	@Override
-	public boolean valueChecked(ParsingStatus currentObj, Attributes attributes) {
+	public boolean valueChecked(ParsingStatus currentObj,
+			Attributes attributes, Locator locator) {
 
 		int iVersionIndex = attributes.getIndex("version");
 		if ( iVersionIndex >= 0 ) {

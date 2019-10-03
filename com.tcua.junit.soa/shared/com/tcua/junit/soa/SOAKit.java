@@ -2,12 +2,14 @@ package com.tcua.junit.soa;
 
 import static org.junit.Assert.assertEquals;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.handler.ArrayHandler;
 import com.tcua.junit.soa.handler.ElementHandler;
@@ -31,6 +33,7 @@ public class SOAKit {
 	protected final Map<Class<?>, ISOAClassHandler> classHandlers;
 	protected ISOAClassHandler rootHandler;
 	protected ISOAClassHandler elementHandler;
+	protected URL sourceURL;
 
 	public SOAKit() {
 		// initialize handler for primitive objects
@@ -77,8 +80,9 @@ public class SOAKit {
 		classHandlers.put(null, new ValueHandler() {
 			
 			@Override
-			public boolean valueChecked(ParsingStatus currentObj, Attributes attributes) {
-				if (isValueNull(currentObj.object, attributes))
+			public boolean valueChecked(ParsingStatus currentObj,
+					Attributes attributes, Locator locator) {
+				if (isValueNull(currentObj.object, attributes, locator))
 					return true;
 				assertEquals(null, currentObj.object);
 				return false;
@@ -168,6 +172,10 @@ public class SOAKit {
 
 	protected ISOAClassHandler getRootHandler() {
 		return rootHandler;
+	}
+
+	public URL getURL() {
+		return sourceURL;
 	}
 
 }

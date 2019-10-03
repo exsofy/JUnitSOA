@@ -1,11 +1,11 @@
 package com.tcua.junit.soa.handler;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
 import com.tcua.junit.soa.SOAKit;
@@ -36,16 +36,21 @@ public class ArrayHandler extends AbstractHandler implements ISOAChildProvider {
 	}
 
 	@Override
-	public boolean valueChecked(ParsingStatus currentObj, Attributes attributes) {
-		if (isValueNull(currentObj.object, attributes))
+	public boolean valueChecked(ParsingStatus currentObj,
+			Attributes attributes, Locator locator) {
+		if (isValueNull(currentObj.object, attributes, locator))
 			return true;
-		
-		assertTrue("Is array", currentObj.object.getClass().isArray());
+
+		assertTrue("Is array " + getLocation(locator),
+				currentObj.object.getClass().isArray());
 		int iSizeIndex = attributes.getIndex("size");
-		if ( iSizeIndex >=0 ) {
-			assertEquals ( "Array size", Integer.parseInt(attributes.getValue(iSizeIndex)), ((Object[])currentObj.object).length );
+		if (iSizeIndex >= 0
+				&& (Integer.parseInt(attributes.getValue(iSizeIndex)) != ((Object[]) currentObj.object).length)) {
+			assertEquals("Array size " + getLocation(locator),
+					Integer.parseInt(attributes.getValue(iSizeIndex)),
+					((Object[]) currentObj.object).length);
 		}
-		
+
 		return false;
 	}
 

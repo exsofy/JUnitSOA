@@ -3,6 +3,7 @@ package com.tcua.junit.soa.handler;
 import static org.junit.Assert.assertTrue;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
 import com.tcua.junit.soa.SOAKit;
@@ -15,10 +16,11 @@ public class TCPropertyHandler extends StringValueHandler {
 	}
 
 	@Override
-	public boolean valueChecked(ParsingStatus currentObj, Attributes attributes) {
+	public boolean valueChecked(ParsingStatus currentObj,
+			Attributes attributes, Locator locator) {
 		assertTrue("Is TCProperty", currentObj.object instanceof TCProperty);
 
-		return super.valueChecked(currentObj, attributes);
+		return super.valueChecked(currentObj, attributes, locator);
 	}
 
 	@Override

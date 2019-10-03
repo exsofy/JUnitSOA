@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 public abstract class ValueHandler implements ISOAClassHandler {
 
@@ -22,17 +23,23 @@ public abstract class ValueHandler implements ISOAClassHandler {
 		return false;
 	}
 
-	public static boolean isValueNull(Object object, Attributes attributes) {
+	public boolean isValueNull(Object object, Attributes attributes,
+			Locator locator) {
 	
 		int isNullIndex = attributes.getIndex("isNull");
 		if (isNullIndex >= 0) {
 			if (Boolean.valueOf(attributes.getValue(isNullIndex))) {
 				// is null true
-				assertEquals("NULL value", null, object);
+				assertEquals("NULL value " + getLocation(locator),
+						null, object);
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public String getLocation(Locator locator) {
+		return " at " + locator.getLineNumber();
 	}
 
 }

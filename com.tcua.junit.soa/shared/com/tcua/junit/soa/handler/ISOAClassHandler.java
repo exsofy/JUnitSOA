@@ -2,6 +2,7 @@ package com.tcua.junit.soa.handler;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
 
@@ -49,8 +50,10 @@ public interface ISOAClassHandler {
 	 *            current object definition
 	 * @param attributes
 	 *            XML attributes
+	 * @param locator
 	 * @return true if value has been checked (not necessary correct)
 	 */
-	boolean valueChecked(ParsingStatus currentObj, Attributes attributes);
+	boolean valueChecked(ParsingStatus currentObj, Attributes attributes,
+			Locator locator);
 
 }
