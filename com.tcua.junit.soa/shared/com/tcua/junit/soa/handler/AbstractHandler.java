@@ -36,8 +36,8 @@ public abstract class AbstractHandler extends ValueHandler implements ISOAClassH
 	public String getLocation ( Locator locator ) {
 		String URL = "";
 		if ( soaKit.getURL() != null ) {
-			URL = soaKit.getURL().getPath();
+			URL = soaKit.getURL().getPath() + " ";
 		}
-		return URL + " at " + locator.getLineNumber();
+		return URL + "at line " + locator.getLineNumber();
 	}
 }

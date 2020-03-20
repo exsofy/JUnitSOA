@@ -12,7 +12,7 @@ import com.teamcenter.rac.kernel.TCProperty;
 public class TCPropertyHandler extends StringValueHandler {
 
 	public TCPropertyHandler(SOAKit soaKit) {
-		super();
+		super(soaKit);
 	}
 
 	@Override

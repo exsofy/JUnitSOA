@@ -56,4 +56,5 @@ public interface ISOAClassHandler {
 	boolean valueChecked(ParsingStatus currentObj, Attributes attributes,
 			Locator locator);
 
+	public String getLocation(Locator locator);
 }

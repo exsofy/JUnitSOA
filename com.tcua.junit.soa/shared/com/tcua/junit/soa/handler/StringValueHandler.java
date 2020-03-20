@@ -7,9 +7,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.ParsingStatus;
+import com.tcua.junit.soa.SOAKit;
 
-public class StringValueHandler extends ValueHandler implements
+public class StringValueHandler extends AbstractHandler implements
 		ISOAClassHandler {
+
+	public StringValueHandler(SOAKit soaKit) {
+		super(soaKit);
+	}
 
 	@Override
 	public boolean extend(Element parent, Object obj) {
@@ -46,7 +51,7 @@ public class StringValueHandler extends ValueHandler implements
 		} else if ( ( iAttr = attributes.getIndex("regex") ) >= 0 ) {
 			// regex
 			assertTrue(
-					"Attribute matches" + getLocation(locator),
+					"Attribute matches " + getLocation(locator),
 					currentObj.object.toString()
 					.matches(attributes.getValue(iAttr)));
 		}

@@ -37,10 +37,10 @@ public class SOAKit {
 
 	public SOAKit() {
 		// initialize handler for primitive objects
-		primitiveHandler = new StringValueHandler();
+		primitiveHandler = new StringValueHandler(this);
 		// initialize handler for array objects
 		arrayHandler = new ArrayHandler(this);
-		// initialize handler for soa entry
+		// initialize handler for SOA entry
 		entryHandler = new SOAEntryHandler(this);
 		// initialize root handler
 		rootHandler = new RootHandler(this);

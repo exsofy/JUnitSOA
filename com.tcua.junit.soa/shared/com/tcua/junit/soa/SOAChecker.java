@@ -54,7 +54,8 @@ public class SOAChecker extends SOAKit {
 				Attributes attributes) throws SAXException {
 
 			if (!(currentObj.handler instanceof ISOAChildProvider)) {
-				fail("Unexpected handler");
+				fail("Unexpected handler "
+						+ currentObj.handler.getLocation(locator));
 			}
 
 			if (currentObj != null) {

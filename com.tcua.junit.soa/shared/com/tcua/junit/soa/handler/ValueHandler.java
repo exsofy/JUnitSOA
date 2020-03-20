@@ -39,7 +39,7 @@ public abstract class ValueHandler implements ISOAClassHandler {
 	}
 
 	public String getLocation(Locator locator) {
-		return " at " + locator.getLineNumber();
+		return "at line " + locator.getLineNumber();
 	}
 
 }
