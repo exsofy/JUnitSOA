@@ -1,6 +1,12 @@
 package com.tcua.junit.soa.handler;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -54,8 +60,42 @@ public class StringValueHandler extends AbstractHandler implements
 					"Attribute matches " + getLocation(locator),
 					currentObj.object.toString()
 					.matches(attributes.getValue(iAttr)));
+		} else if ((iAttr = attributes.getIndex("get")) >= 0) {
+			// evaluate
+			try {
+				String[] invoke = attributes.getValue(iAttr).split("[.(,)]");
+
+				if (invoke.length < 2) {
+					fail("get not configured " + attributes.getValue(iAttr));
+				}
+
+				Class<?> evaluatorClass = soaKit.getEvaluator(invoke[0]);
+
+				Class[] paramTypes = new Class[invoke.length - 2];
+				Arrays.fill(paramTypes, String.class);
+
+				Method method = evaluatorClass.getDeclaredMethod(invoke[1],
+						paramTypes);
+
+				if (method == null) {
+					assertNotNull("Method " + invoke[1] + " " + evaluatorClass,
+							method);
+				}
+
+				String[] params = new String[invoke.length - 2];
+				System.arraycopy(invoke, 2, params, 0, invoke.length - 2);
+				String value = (String) method.invoke(null, params);
+
+				assertEquals("Attribute value " + getLocation(locator), value,
+						currentObj.object.toString());
+			} catch (NoSuchMethodException
+					| SecurityException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
 		}
-		// neither null, value nor regex
+		// neither null, value, regex or get
 
 		// attribute is leaf
 		return true;

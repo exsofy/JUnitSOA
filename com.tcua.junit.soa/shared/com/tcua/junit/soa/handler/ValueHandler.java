@@ -14,6 +14,17 @@ public abstract class ValueHandler implements ISOAClassHandler {
 
 	@Override
 	public boolean extend(Element parent, Object obj) {
+		return handleNull(parent, obj);
+	}
+
+	/**
+	 * Manage null attribute
+	 * 
+	 * @param parent
+	 * @param obj
+	 * @return true if attribute is consumed
+	 */
+	protected boolean handleNull(Element parent, Object obj) {
 		if (obj == null) {
 			// manage null value
 			parent.setAttribute("isNull", "true");
@@ -21,6 +32,7 @@ public abstract class ValueHandler implements ISOAClassHandler {
 		}
 
 		return false;
+
 	}
 
 	public boolean isValueNull(Object object, Attributes attributes,

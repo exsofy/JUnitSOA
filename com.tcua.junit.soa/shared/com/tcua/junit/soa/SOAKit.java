@@ -34,6 +34,7 @@ public class SOAKit {
 	protected ISOAClassHandler rootHandler;
 	protected ISOAClassHandler elementHandler;
 	protected URL sourceURL;
+	private Map<String, Class<?>> evaluators;
 
 	public SOAKit() {
 		// initialize handler for primitive objects
@@ -49,6 +50,10 @@ public class SOAKit {
 
 		// class specific handlers
 		classHandlers = new HashMap<Class<?>, ISOAClassHandler>();
+
+		// runtime evaluators
+		evaluators = new HashMap<String, Class<?>>();
+		registerEvaluator("TCRuntime", com.tcua.junit.soa.TCRuntime.class);
 
 		// handle basic classes as primitives
 		classHandlers.put(String.class, primitiveHandler);
@@ -71,7 +76,7 @@ public class SOAKit {
 			@Override
 			public boolean extend(Element parent, Object obj) {
 				// handle null only, no children
-				super.extend(parent, obj);
+				handleNull(parent, obj);
 				return true;
 			}
 		});
@@ -176,6 +181,27 @@ public class SOAKit {
 
 	public URL getURL() {
 		return sourceURL;
+	}
+
+	/**
+	 * Get evaluator class for runtime evaluation. The class must be registered
+	 * before.
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public Class<?> getEvaluator(String evaluatorKey) {
+		return evaluators.get(evaluatorKey);
+	}
+
+	/**
+	 * Register class evaluator
+	 * 
+	 * @param evaluatorKey
+	 * @param clazz
+	 */
+	public void registerEvaluator(String evaluatorKey, Class<?> clazz) {
+		evaluators.put(evaluatorKey, clazz);
 	}
 
 }
