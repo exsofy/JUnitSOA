@@ -2,6 +2,7 @@ package com.tcua.junit.soa.handler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -60,7 +61,8 @@ public class ArrayHandler extends AbstractHandler implements ISOAChildProvider {
 	}
 
 	@Override
-	public Object getChild(ParsingStatus status, Attributes attributes) {
+	public Object getChild(ParsingStatus status, Attributes attributes,
+			Locator locator) {
 
 		// in array returns sequential objects for each call
 		assertTrue(status.object.getClass().isArray());
@@ -79,8 +81,9 @@ public class ArrayHandler extends AbstractHandler implements ISOAChildProvider {
 
 		if (((Object[]) status.object).length > index) {
 			return ((Object[]) status.object)[index];
+		} else {
+			fail("Array index out of bound at " + getLocation(locator));
 		}
-
 		return null;
 	}
 

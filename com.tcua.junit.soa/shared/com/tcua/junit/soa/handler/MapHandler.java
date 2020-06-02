@@ -71,7 +71,8 @@ public class MapHandler extends AbstractHandler implements ISOAChildProvider {
 	}
 
 	@Override
-	public Object getChild(ParsingStatus status, Attributes attributes) {
+	public Object getChild(ParsingStatus status, Attributes attributes,
+			Locator locator) {
 
 		// in array returns sequential objects for each call
 		assertTrue(Map.class.isAssignableFrom(status.object.getClass()));

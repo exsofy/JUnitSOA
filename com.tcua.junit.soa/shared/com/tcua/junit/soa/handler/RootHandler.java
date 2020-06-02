@@ -17,7 +17,8 @@ public class RootHandler extends SOAEntryHandler {
 	}
 
 	@Override
-	public Object getChild(ParsingStatus currentObj, Attributes attributes) {
+	public Object getChild(ParsingStatus currentObj, Attributes attributes,
+			Locator locator) {
 		return currentObj.object;
 	}
 

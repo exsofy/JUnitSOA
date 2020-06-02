@@ -66,7 +66,8 @@ public class SOAEntryHandler extends AbstractHandler implements ISOAChildProvide
 	}
 
 	@Override
-	public Object getChild(ParsingStatus currentObj, Attributes attributes) {
+	public Object getChild(ParsingStatus currentObj, Attributes attributes,
+			Locator locator) {
 		int iNameIndex = attributes.getIndex("name");
 		if (iNameIndex >= 0) {
 			String name = attributes.getValue(iNameIndex);
@@ -77,7 +78,7 @@ public class SOAEntryHandler extends AbstractHandler implements ISOAChildProvide
 			} catch (NoSuchFieldException | SecurityException
 					| IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
-				fail(e.getMessage());
+				fail(e.getMessage() + " at " + getLocation(locator));
 			}
 		}
 		return null;

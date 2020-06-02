@@ -60,7 +60,7 @@ public class SOAChecker extends SOAKit {
 
 			if (currentObj != null) {
 				Object nextObj = ((ISOAChildProvider) currentObj.handler)
-						.getChild(currentObj, attributes);
+						.getChild(currentObj, attributes, locator);
 				
 				ISOAClassHandler nextHandler = getHandler(nextObj == null ? null
 						: nextObj.getClass());
