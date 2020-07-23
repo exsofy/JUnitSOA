@@ -69,22 +69,29 @@ public class StringValueHandler extends AbstractHandler implements
 					fail("get not configured " + attributes.getValue(iAttr));
 				}
 
-				Class<?> evaluatorClass = soaKit.getEvaluator(invoke[0]);
+				Object evaluator = soaKit.getEvaluator(invoke[0]);
+
+				if (evaluator == null) {
+					assertNotNull("Evaluator " + invoke[0] + " not registered",
+							evaluator);
+				}
 
 				Class[] paramTypes = new Class[invoke.length - 2];
 				Arrays.fill(paramTypes, String.class);
 
-				Method method = evaluatorClass.getDeclaredMethod(invoke[1],
+				Method method = evaluator.getClass().getDeclaredMethod(
+						invoke[1],
 						paramTypes);
 
 				if (method == null) {
-					assertNotNull("Method " + invoke[1] + " " + evaluatorClass,
+					assertNotNull(
+							"Method " + invoke[1] + " " + evaluator.getClass(),
 							method);
 				}
 
 				String[] params = new String[invoke.length - 2];
 				System.arraycopy(invoke, 2, params, 0, invoke.length - 2);
-				String value = (String) method.invoke(null, params);
+				String value = (String) method.invoke(evaluator, params);
 
 				assertEquals("Attribute value " + getLocation(locator), value,
 						currentObj.object.toString());
@@ -92,7 +99,7 @@ public class StringValueHandler extends AbstractHandler implements
 					| SecurityException | IllegalAccessException
 					| IllegalArgumentException | InvocationTargetException e) {
 				e.printStackTrace();
-				fail(e.getMessage());
+				fail(e.getMessage() + " in " + getLocation(locator));
 			}
 		}
 		// neither null, value, regex or get

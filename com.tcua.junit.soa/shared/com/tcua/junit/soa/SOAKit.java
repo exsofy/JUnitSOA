@@ -3,6 +3,7 @@ package com.tcua.junit.soa;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,6 +13,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
 import com.tcua.junit.soa.handler.ArrayHandler;
+import com.tcua.junit.soa.handler.CalendarHandler;
 import com.tcua.junit.soa.handler.ElementHandler;
 import com.tcua.junit.soa.handler.ISOAClassHandler;
 import com.tcua.junit.soa.handler.MapHandler;
@@ -28,17 +30,20 @@ import com.teamcenter.rac.kernel.TCProperty;
 public class SOAKit {
 
 	protected ISOAClassHandler primitiveHandler = null;
+	protected ISOAClassHandler calendarHandler = null;
 	protected ISOAClassHandler arrayHandler = null;
 	protected ISOAClassHandler entryHandler;
 	protected final Map<Class<?>, ISOAClassHandler> classHandlers;
 	protected ISOAClassHandler rootHandler;
 	protected ISOAClassHandler elementHandler;
 	protected URL sourceURL;
-	private Map<String, Class<?>> evaluators;
+	private Map<String, Object> evaluators;
 
 	public SOAKit() {
 		// initialize handler for primitive objects
 		primitiveHandler = new StringValueHandler(this);
+		// initialize handler for cvalendar objects
+		calendarHandler = new CalendarHandler(this);
 		// initialize handler for array objects
 		arrayHandler = new ArrayHandler(this);
 		// initialize handler for SOA entry
@@ -52,8 +57,8 @@ public class SOAKit {
 		classHandlers = new HashMap<Class<?>, ISOAClassHandler>();
 
 		// runtime evaluators
-		evaluators = new HashMap<String, Class<?>>();
-		registerEvaluator("TCRuntime", com.tcua.junit.soa.TCRuntime.class);
+		evaluators = new HashMap<String, Object>();
+		registerEvaluator("TCRuntime", new TCRuntime());
 
 		// handle basic classes as primitives
 		classHandlers.put(String.class, primitiveHandler);
@@ -62,6 +67,7 @@ public class SOAKit {
 		classHandlers.put(Long.class, primitiveHandler);
 		classHandlers.put(Double.class, primitiveHandler);
 		classHandlers.put(Byte.class, primitiveHandler);
+		classHandlers.put(Calendar.class, calendarHandler);
 
 		// handle map interface
 		classHandlers.put(Map.class, new MapHandler(this));
@@ -190,7 +196,7 @@ public class SOAKit {
 	 * @param string
 	 * @return
 	 */
-	public Class<?> getEvaluator(String evaluatorKey) {
+	public Object getEvaluator(String evaluatorKey) {
 		return evaluators.get(evaluatorKey);
 	}
 
@@ -200,8 +206,8 @@ public class SOAKit {
 	 * @param evaluatorKey
 	 * @param clazz
 	 */
-	public void registerEvaluator(String evaluatorKey, Class<?> clazz) {
-		evaluators.put(evaluatorKey, clazz);
+	public void registerEvaluator(String evaluatorKey, Object evaluator) {
+		evaluators.put(evaluatorKey, evaluator);
 	}
 
 }

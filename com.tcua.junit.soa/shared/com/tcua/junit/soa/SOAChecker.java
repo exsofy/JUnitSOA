@@ -71,7 +71,14 @@ public class SOAChecker extends SOAKit {
 							|| ElementHandler.getHandlerTagName().equals(qName) || nextHandler
 								.getTagName() == null)) {
 						// neither root, element nor null handler
-						assertEquals(qName, nextHandler.getTagName());
+						String message = "";
+						if (!qName.equals(nextHandler.getTagName())) {
+							// compose message
+							message = "Tag name "
+									+ currentObj.handler.getLocation(locator);
+						}
+						assertEquals(message,
+								qName, nextHandler.getTagName());
 					}
 
 					fifo.push(currentObj);

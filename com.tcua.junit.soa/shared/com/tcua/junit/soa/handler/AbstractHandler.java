@@ -1,6 +1,5 @@
 package com.tcua.junit.soa.handler;
 
-
 import org.w3c.dom.Element;
 import org.xml.sax.Locator;
 
