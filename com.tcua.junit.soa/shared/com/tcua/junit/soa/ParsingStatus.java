@@ -3,8 +3,6 @@ package com.tcua.junit.soa;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.xml.sax.Attributes;
-
 import com.tcua.junit.soa.handler.ISOAClassHandler;
 
 public class ParsingStatus {

@@ -1,6 +1,7 @@
 package com.tcua.junit.soa;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -10,10 +11,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSOutput;
+import org.w3c.dom.ls.LSSerializer;
 
-import com.sun.org.apache.xml.internal.serialize.Method;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import com.tcua.junit.soa.handler.RootHandler;
 
 /**
@@ -88,8 +89,20 @@ public class SOAExporter extends SOAKit {
 			
 			doc.appendChild(rootElement);
 	
-			java.io.Writer writer = new java.io.FileWriter(filePath);
-	        OutputFormat format = new OutputFormat(Method.XML, StandardCharsets.UTF_8.toString(), true);
+			DOMImplementationLS domImplementation = (DOMImplementationLS) doc.getImplementation();
+		    LSSerializer lsSerializer = domImplementation.createLSSerializer();
+		    final Boolean keepDeclaration = true;
+
+		    lsSerializer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE); // Set this to true if the output needs to be beautified.
+		    lsSerializer.getDomConfig().setParameter("xml-declaration", keepDeclaration); // Set this to true if the declaration is needed to be outputted.
+
+		    FileOutputStream writer = new FileOutputStream(filePath);
+		    LSOutput lsOutput = domImplementation.createLSOutput();
+		    lsOutput.setEncoding(StandardCharsets.UTF_8.toString());
+		    lsOutput.setByteStream(writer);
+		    lsSerializer.write(doc,lsOutput);			
+			
+/*	        OutputFormat format = new OutputFormat(Method.XML, StandardCharsets.UTF_8.toString(), true);
 	        format.setLineWidth(80);
 	        format.setPreserveEmptyAttributes(true);
 			// format.setPreserveSpace(true);
@@ -97,6 +110,7 @@ public class SOAExporter extends SOAKit {
 			format.setIndenting(true);
 	        XMLSerializer xml = new XMLSerializer(writer, format);
 	        xml.serialize(doc);
+*/
 	        writer.close();
 		} catch (IOException | ParserConfigurationException e) {
 			e.printStackTrace();
