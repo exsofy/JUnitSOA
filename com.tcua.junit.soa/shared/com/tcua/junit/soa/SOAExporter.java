@@ -88,7 +88,6 @@ public class SOAExporter extends SOAKit {
 			getRootHandler().extend(rootElement, resp);
 			
 			doc.appendChild(rootElement);
-	
 			DOMImplementationLS domImplementation = (DOMImplementationLS) doc.getImplementation();
 		    LSSerializer lsSerializer = domImplementation.createLSSerializer();
 		    final Boolean keepDeclaration = true;
@@ -101,7 +100,13 @@ public class SOAExporter extends SOAKit {
 		    lsOutput.setEncoding(StandardCharsets.UTF_8.toString());
 		    lsOutput.setByteStream(writer);
 		    lsSerializer.write(doc,lsOutput);			
-			
+	        writer.close();
+
+/*	
+		    Transformer tr = TransformerFactory.newInstance().newTransformer();
+		    tr.setOutputProperty(OutputKeys.INDENT, "yes");
+		    tr.transform( new DOMSource( doc ), new StreamResult(filePath));		    
+*/		    
 /*	        OutputFormat format = new OutputFormat(Method.XML, StandardCharsets.UTF_8.toString(), true);
 	        format.setLineWidth(80);
 	        format.setPreserveEmptyAttributes(true);
@@ -111,8 +116,7 @@ public class SOAExporter extends SOAKit {
 	        XMLSerializer xml = new XMLSerializer(writer, format);
 	        xml.serialize(doc);
 */
-	        writer.close();
-		} catch (IOException | ParserConfigurationException e) {
+		} catch ( IOException | ParserConfigurationException e ) {
 			e.printStackTrace();
 		}
 	}

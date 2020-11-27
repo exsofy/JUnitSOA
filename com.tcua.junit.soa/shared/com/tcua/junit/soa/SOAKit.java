@@ -16,6 +16,7 @@ import com.tcua.junit.soa.handler.ArrayHandler;
 import com.tcua.junit.soa.handler.CalendarHandler;
 import com.tcua.junit.soa.handler.ElementHandler;
 import com.tcua.junit.soa.handler.ISOAClassHandler;
+import com.tcua.junit.soa.handler.LocalizedHandler;
 import com.tcua.junit.soa.handler.MapHandler;
 import com.tcua.junit.soa.handler.RootHandler;
 import com.tcua.junit.soa.handler.SOAEntryHandler;
@@ -30,6 +31,7 @@ import com.teamcenter.rac.kernel.TCProperty;
 public class SOAKit {
 
 	protected ISOAClassHandler primitiveHandler = null;
+	protected ISOAClassHandler localizedHandler = null;
 	protected ISOAClassHandler calendarHandler = null;
 	protected ISOAClassHandler arrayHandler = null;
 	protected ISOAClassHandler entryHandler;
@@ -42,7 +44,9 @@ public class SOAKit {
 	public SOAKit() {
 		// initialize handler for primitive objects
 		primitiveHandler = new StringValueHandler(this);
-		// initialize handler for cvalendar objects
+		// initialize handler for localized objects
+		localizedHandler = new LocalizedHandler(this);
+		// initialize handler for calendar objects
 		calendarHandler = new CalendarHandler(this);
 		// initialize handler for array objects
 		arrayHandler = new ArrayHandler(this);
@@ -117,8 +121,17 @@ public class SOAKit {
 				return false;
 			}
 		});
-}
+	}
 
+	// Handle content specific handlers, e.g. localized strings
+	public ISOAClassHandler getHandler(Class<?> type, String qName ) {
+		
+		if ( qName.equals("localized") ) {
+			return localizedHandler;
+		}
+		return getHandler(type);
+	}
+	
 	public ISOAClassHandler getHandler(Class<?> type) {
 
 		if (type == null) {

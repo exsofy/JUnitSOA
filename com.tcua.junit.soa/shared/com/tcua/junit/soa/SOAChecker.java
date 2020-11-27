@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -26,6 +27,12 @@ import com.tcua.junit.soa.handler.RootHandler;
 
 public class SOAChecker extends SOAKit {
 
+	// automatic dump for all checker
+	protected static boolean autoDumpGeneral = false;
+	
+	// dump for this instance
+	protected boolean autoDump = false;
+	
 	protected class CheckHandler extends DefaultHandler {
 
 		// manages the current file location
@@ -57,13 +64,13 @@ public class SOAChecker extends SOAKit {
 				fail("Unexpected handler "
 						+ currentObj.handler.getLocation(locator));
 			}
-
+			
 			if (currentObj != null) {
 				Object nextObj = ((ISOAChildProvider) currentObj.handler)
 						.getChild(currentObj, attributes, locator);
 				
 				ISOAClassHandler nextHandler = getHandler(nextObj == null ? null
-						: nextObj.getClass());
+						: nextObj.getClass(), qName);
 
 				if (nextHandler != null) {
 					
@@ -77,8 +84,8 @@ public class SOAChecker extends SOAKit {
 							message = "Tag name "
 									+ currentObj.handler.getLocation(locator);
 						}
-						assertEquals(message,
-								qName, nextHandler.getTagName());
+						assertEquals(message, nextHandler.getTagName(),
+								qName);
 					}
 
 					fifo.push(currentObj);
@@ -117,6 +124,10 @@ public class SOAChecker extends SOAKit {
 				.replace('.', File.separatorChar)
 				.replace('$', File.separatorChar);
 
+		if ( autoDumpGeneral || autoDump ) {
+			SOAExporter.dumpToTmp(resp, fileName );
+		}
+
 		File file = new File(fileRoot, path + File.separatorChar + fileName);
 		sourceURL = file.toURI().toURL();
 		
@@ -138,9 +149,23 @@ public class SOAChecker extends SOAKit {
 			throws ParserConfigurationException, SAXException, IOException {
 		sourceURL = resource;
 
+		if ( autoDumpGeneral || autoDump ) {
+			String path = resource.getPath();
+			if ( path != null ) {
+				SOAExporter.dumpToTmp(resp, new File(path).getName() );
+			}
+		}
+		
 		InputSource is = new InputSource(resource.openStream());
 
 		checkResponse(resp, is);
 	}
 
+	public static void setAutoDumpGeneral(boolean autoDumpGeneral) {
+		SOAChecker.autoDumpGeneral = autoDumpGeneral;
+	}
+
+	public void setAutoDump(boolean autoDump) {
+		this.autoDump = autoDump;
+	}
 }
