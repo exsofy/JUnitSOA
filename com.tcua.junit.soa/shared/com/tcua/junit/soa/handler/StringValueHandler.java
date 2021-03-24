@@ -49,8 +49,7 @@ public class StringValueHandler extends AbstractHandler implements
 			// value
 			if (!attributes.getValue(iAttr)
 					.equals(currentObj.object.toString())) {
-				assertEquals(
-"Attribute value " + getLocation(locator),
+				assertEquals( "Attribute value " + getLocation(locator),
 						attributes.getValue(iAttr),
 						currentObj.object.toString());
 			}

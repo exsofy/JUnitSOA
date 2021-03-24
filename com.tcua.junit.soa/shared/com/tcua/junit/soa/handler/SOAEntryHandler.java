@@ -75,7 +75,10 @@ public class SOAEntryHandler extends AbstractHandler implements ISOAChildProvide
 			try {
 				Field field = currentObj.object.getClass().getField(name);
 				return field.get(currentObj.object);
-			} catch (NoSuchFieldException | SecurityException
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+				fail( "Field " + e.getMessage() + " not found at " + getLocation(locator));
+			} catch ( SecurityException
 					| IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 				fail(e.getMessage() + " at " + getLocation(locator));
